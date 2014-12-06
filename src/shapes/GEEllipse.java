@@ -18,5 +18,9 @@ public class GEEllipse extends GEShape{
 		tempEllipse.setFrame(startP.x, startP.y, 
 				currentP.x - startP.x,  currentP.y - startP.y);
 	}
+	
+	public GEShape clone() {
+		return new GEEllipse();
+	}
 
 }

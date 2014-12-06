@@ -18,4 +18,7 @@ public class GELine extends GEShape{
 		tempLine.setLine(startP.x, startP.y, currentP.x,  currentP.y);
 	}
 
+	public GEShape clone() {
+		return new GELine();
+	}
 }

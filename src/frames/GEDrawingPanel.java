@@ -7,14 +7,18 @@ import javax.swing.JPanel;
 import java.awt.Point;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
+import java.awt.Graphics;
+import java.util.ArrayList;
 
 public class GEDrawingPanel extends JPanel {
 
 	private GEShape currentShape;
+	private ArrayList<GEShape> shapeList;
 	private MouseDrawingHandler drawingHandler;
 
 	public GEDrawingPanel() {
 		super();
+		shapeList = new ArrayList<GEShape>();
 		drawingHandler = new MouseDrawingHandler();
 		this.addMouseListener(drawingHandler);
 		this.addMouseMotionListener(drawingHandler);
@@ -26,7 +30,16 @@ public class GEDrawingPanel extends JPanel {
 		this.currentShape = currentShape;
 	}
 	
+	public void paintComponent(Graphics g){
+		super.paintComponent(g);
+		Graphics2D g2D = (Graphics2D)g;
+		for(GEShape shape : shapeList){
+			shape.draw(g2D);
+		}
+	}
+	
 	private void initDraw(Point startP){
+		currentShape = currentShape.clone();
 		currentShape.initDraw(startP);
 	}
 	
@@ -36,6 +49,10 @@ public class GEDrawingPanel extends JPanel {
 		currentShape.draw(g2D);
 		currentShape.setCoordinate(currentP);
 		currentShape.draw(g2D);
+	}
+	
+	private void finishDraw(){
+		shapeList.add(currentShape);
 	}
 	
 	private class MouseDrawingHandler extends MouseInputAdapter{
@@ -50,6 +67,12 @@ public class GEDrawingPanel extends JPanel {
 			initDraw(e.getPoint());
 		}
 
+		@Override
+		public void mouseReleased(MouseEvent arg0) {
+			finishDraw();
+		}
+		
+		
 	}
 
 }

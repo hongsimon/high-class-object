@@ -18,4 +18,5 @@ public abstract class GEShape {
 	
 	abstract public void initDraw(Point startP);
 	abstract public void setCoordinate(Point currentP);
+	abstract public GEShape clone();
 }
