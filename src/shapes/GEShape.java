@@ -8,6 +8,7 @@ import utils.GEAnchorList;
 import constants.GEConstants.EAnchorTypes;
 import java.awt.Color;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 
 public abstract class GEShape {
 	protected Shape myShape;
@@ -24,8 +25,27 @@ public abstract class GEShape {
 		selected = false;
 		affineTransform = new AffineTransform();
 	}
+		
+	public boolean isSelected() {
+		return selected;
+	}
+
+
+
+	public Rectangle getBounds(){
+		return myShape.getBounds();
+	}
 	
-	
+	public EAnchorTypes getSelectedAnchor() {
+		return selectedAnchor;
+	}
+
+
+	public GEAnchorList getAnchorList() {
+		return anchorList;
+	}
+
+
 	public void setLineColor(Color lineColor) {
 		this.lineColor = lineColor;
 	}
@@ -69,6 +89,26 @@ public abstract class GEShape {
 			}
 		}
 		return myShape.intersects(new Rectangle(p.x, p.y, 2, 2));
+	}
+	
+	public EAnchorTypes onAnchor(Point p){
+		selectedAnchor = anchorList.onAnchors(p);
+		return selectedAnchor;
+	}
+	
+	public void resizeCoordinate(Point2D resizeFactor){
+		affineTransform.setToScale(resizeFactor.getX(), resizeFactor.getY());
+		myShape = affineTransform.createTransformedShape(myShape);
+	}
+	
+	public void moveReverse(Point2D resizeAnchor){
+		affineTransform.setToTranslation(-resizeAnchor.getX(), -resizeAnchor.getY());
+		myShape = affineTransform.createTransformedShape(myShape);
+	}
+	
+	public void move(Point2D resizeAnchor){
+		affineTransform.setToTranslation(resizeAnchor.getX(), resizeAnchor.getY());
+		myShape = affineTransform.createTransformedShape(myShape);
 	}
 	
 	public void moveCoordinate(Point moveP){

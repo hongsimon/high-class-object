@@ -19,6 +19,10 @@ public class GEAnchorList {
 		}
 	}
 	
+	public ArrayList<Ellipse2D.Double> getAnchors() {
+		return anchors;
+	}
+
 	public void setPosition(Rectangle r) {
 		int x = r.x;
 		int y = r.y;
