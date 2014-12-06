@@ -2,21 +2,18 @@ package shapes;
 
 import java.awt.Rectangle;
 import java.awt.Point;
-public class GERectangle {
-	private Point startP;
-	private Rectangle rectangle;
+public class GERectangle extends GEShape{
+	
 	public GERectangle(){
-		rectangle = new Rectangle();
+		super(new Rectangle());
 	}
 	public void initDraw(Point startP){
 		this.startP = startP;
 	}
 	public void setCoordinate(Point currentP){
-		rectangle.setFrame(startP.x, startP.y, 
+		Rectangle tempRectangle = (Rectangle)myShape;
+		tempRectangle.setFrame(startP.x, startP.y, 
 				currentP.x - startP.x, currentP.y - startP.y);
-	}
-	public Rectangle getRectangle(){
-		return rectangle;
 	}
 
 }

@@ -8,6 +8,9 @@ import constants.GEConstants;
 import constants.GEConstants.EToolBarButtons;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import shapes.GERectangle;
+import shapes.GEEllipse;
+import shapes.GELine;
 
 public class GEToolBar extends JToolBar {
 	
@@ -51,13 +54,13 @@ public class GEToolBar extends JToolBar {
 			JRadioButton button = (JRadioButton)e.getSource();
 			if(button.getActionCommand().equals(              
 	                EToolBarButtons.Rectangle.name())){         
-	        drawingPanel.setSelectShape(EToolBarButtons.Rectangle);   
+	        drawingPanel.setCurrentShape(new GERectangle());
 	      }else if(button.getActionCommand().equals(            
 	                EToolBarButtons.Ellipse.name())){              
-	        drawingPanel.setSelectShape(EToolBarButtons.Ellipse);   
+	        drawingPanel.setCurrentShape(new GEEllipse());
 	      }else if(button.getActionCommand().equals(            
 	                EToolBarButtons.Line.name())){                    
-	        drawingPanel.setSelectShape(EToolBarButtons.Line);      
+	        drawingPanel.setCurrentShape(new GELine());     
 	      }                               
 		}
 	}
