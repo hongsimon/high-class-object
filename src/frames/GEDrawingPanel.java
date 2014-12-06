@@ -2,7 +2,9 @@ package frames;
 
 import javax.swing.event.MouseInputAdapter;
 import constants.GEConstants;
+import constants.GEConstants.EState;
 import shapes.GEShape;
+import shapes.GEPolygon;
 import javax.swing.JPanel;
 import java.awt.Point;
 import java.awt.Graphics2D;
@@ -13,12 +15,14 @@ import java.util.ArrayList;
 public class GEDrawingPanel extends JPanel {
 
 	private GEShape currentShape;
+	private EState currentState;
 	private ArrayList<GEShape> shapeList;
 	private MouseDrawingHandler drawingHandler;
 
 	public GEDrawingPanel() {
 		super();
 		shapeList = new ArrayList<GEShape>();
+		currentState = EState.Idle;
 		drawingHandler = new MouseDrawingHandler();
 		this.addMouseListener(drawingHandler);
 		this.addMouseMotionListener(drawingHandler);
@@ -51,6 +55,10 @@ public class GEDrawingPanel extends JPanel {
 		currentShape.draw(g2D);
 	}
 	
+	private void continueDrawing(Point currentP){
+		((GEPolygon)currentShape).continueDrawing(currentP);
+	}
+	
 	private void finishDraw(){
 		shapeList.add(currentShape);
 	}
@@ -59,19 +67,53 @@ public class GEDrawingPanel extends JPanel {
 
 		@Override
 		public void mouseDragged(MouseEvent e) {
-			animateDraw(e.getPoint());
+			if(currentState == EState.TwoPointsDrawing){
+				animateDraw(e.getPoint());
+			}
 		}
 
 		@Override
 		public void mousePressed(MouseEvent e) {
-			initDraw(e.getPoint());
+			if(currentState == EState.Idle){
+				initDraw(e.getPoint());
+				if(currentShape instanceof GEPolygon){
+					currentState = EState.NPointsDrawing;
+				}else{
+					currentState = EState.TwoPointsDrawing;
+				}
+			}
 		}
 
 		@Override
-		public void mouseReleased(MouseEvent arg0) {
-			finishDraw();
+		public void mouseReleased(MouseEvent e) {
+			if(currentState == EState.TwoPointsDrawing){
+				finishDraw();
+				currentState = EState.Idle;
+				repaint();
+			}
 		}
-		
+
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			if(e.getButton() == MouseEvent.BUTTON1){
+				if(currentState == EState.NPointsDrawing){
+					if(e.getClickCount() == 1){
+						continueDrawing(e.getPoint());
+					}else if(e.getClickCount() == 2){
+						finishDraw();
+						currentState = EState.Idle;
+						repaint();
+					}
+				}
+			}
+		}
+
+		@Override
+		public void mouseMoved(MouseEvent e) {
+			if(currentState == EState.NPointsDrawing){
+				animateDraw(e.getPoint());
+			}
+		}		
 		
 	}
 
