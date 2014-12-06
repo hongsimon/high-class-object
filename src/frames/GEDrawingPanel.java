@@ -11,12 +11,15 @@ import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.Graphics;
 import java.util.ArrayList;
+import transformer.GEDrawer;
+import transformer.GETransformer;
 
 public class GEDrawingPanel extends JPanel {
 
-	private GEShape currentShape;
+	private GEShape currentShape, selectedShape;
 	private EState currentState;
 	private ArrayList<GEShape> shapeList;
+	private GETransformer transformer;
 	private MouseDrawingHandler drawingHandler;
 
 	public GEDrawingPanel() {
@@ -44,23 +47,33 @@ public class GEDrawingPanel extends JPanel {
 	
 	private void initDraw(Point startP){
 		currentShape = currentShape.clone();
-		currentShape.initDraw(startP);
+		transformer = new GEDrawer(currentShape);
+		transformer.init(startP);
 	}
 	
-	private void animateDraw(Point currentP){
-		Graphics2D g2D = (Graphics2D)getGraphics();      
-		g2D.setXORMode(g2D.getBackground());         
-		currentShape.draw(g2D);
-		currentShape.setCoordinate(currentP);
-		currentShape.draw(g2D);
-	}
 	
 	private void continueDrawing(Point currentP){
-		((GEPolygon)currentShape).continueDrawing(currentP);
+		((GEDrawer)transformer).continueDrawing(currentP);
 	}
 	
 	private void finishDraw(){
 		shapeList.add(currentShape);
+	}
+	
+	private GEShape onShape(Point p){
+		for(int i = shapeList.size(); i > 0; i--){
+			GEShape shape = shapeList.get(i-1);
+			if(shape.onShape(p)){
+				return shape;
+			}
+		}
+		return null;
+	}
+	
+	private void clearSelectedShapes(){
+		for(GEShape shape : shapeList){
+			shape.setSelected(false);
+		}
 	}
 	
 	private class MouseDrawingHandler extends MouseInputAdapter{
@@ -68,18 +81,29 @@ public class GEDrawingPanel extends JPanel {
 		@Override
 		public void mouseDragged(MouseEvent e) {
 			if(currentState == EState.TwoPointsDrawing){
-				animateDraw(e.getPoint());
+				transformer.transformer(
+						(Graphics2D)getGraphics(), e.getPoint());
 			}
 		}
 
 		@Override
 		public void mousePressed(MouseEvent e) {
 			if(currentState == EState.Idle){
-				initDraw(e.getPoint());
-				if(currentShape instanceof GEPolygon){
-					currentState = EState.NPointsDrawing;
+				if(currentShape != null){
+					clearSelectedShapes();
+					selectedShape = null;
+					initDraw(e.getPoint());
+					if(currentShape instanceof GEPolygon){
+						currentState = EState.NPointsDrawing;
+					}else{
+						currentState = EState.TwoPointsDrawing;
+					}
 				}else{
-					currentState = EState.TwoPointsDrawing;
+					selectedShape = onShape(e.getPoint());
+					clearSelectedShapes();
+					if(selectedShape != null){
+						selectedShape.setSelected(true);
+					}
 				}
 			}
 		}
@@ -89,8 +113,10 @@ public class GEDrawingPanel extends JPanel {
 			if(currentState == EState.TwoPointsDrawing){
 				finishDraw();
 				currentState = EState.Idle;
-				repaint();
+			}else if(currentState == EState.NPointsDrawing){
+				return;
 			}
+			repaint();
 		}
 
 		@Override
@@ -111,34 +137,9 @@ public class GEDrawingPanel extends JPanel {
 		@Override
 		public void mouseMoved(MouseEvent e) {
 			if(currentState == EState.NPointsDrawing){
-				animateDraw(e.getPoint());
+				transformer.transformer(
+						(Graphics2D)getGraphics(), e.getPoint());
 			}
 		}		
-		
 	}
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

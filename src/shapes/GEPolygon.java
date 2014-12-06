@@ -16,6 +16,9 @@ public class GEPolygon extends GEShape {
 		Polygon tempPolygon = (Polygon)myShape;
 		tempPolygon.xpoints[((Polygon)myShape).npoints - 1] = currentP.x;
 		tempPolygon.ypoints[((Polygon)myShape).npoints - 1] = currentP.y;
+		if(anchorList != null){
+			anchorList.setPosition(myShape.getBounds());
+		}
 	}
 	
 	public void continueDrawing(Point currentP){

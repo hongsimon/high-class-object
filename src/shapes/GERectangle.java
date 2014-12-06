@@ -2,6 +2,7 @@ package shapes;
 
 import java.awt.Rectangle;
 import java.awt.Point;
+
 public class GERectangle extends GEShape{
 	
 	public GERectangle(){
@@ -16,6 +17,9 @@ public class GERectangle extends GEShape{
 		Rectangle tempRectangle = (Rectangle)myShape;
 		tempRectangle.setFrame(startP.x, startP.y, 
 				currentP.x - startP.x, currentP.y - startP.y);
+		if(anchorList != null){
+			anchorList.setPosition(myShape.getBounds());
+		}
 	}
 	
 	public GEShape clone() {
