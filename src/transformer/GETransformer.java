@@ -10,6 +10,7 @@ public abstract class GETransformer {
 	
 	protected GEShape shape;
 	protected BasicStroke dashedLineStroke;
+	protected Point previousP;
 	
 	public GETransformer(GEShape shape){
 		this.shape = shape;
@@ -17,7 +18,7 @@ public abstract class GETransformer {
 		dashedLineStroke = new BasicStroke(
 				GEConstants.DEFAULT_DASHEDLINE_WIDTH,
 				BasicStroke.CAP_ROUND,
-				BasicStroke.JOIN_ROUND, 10, dashes, 1);
+				BasicStroke.JOIN_ROUND, 10, dashes, 0);
 	}
 	
 	abstract public void init(Point p);

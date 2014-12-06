@@ -13,6 +13,7 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import transformer.GEDrawer;
 import transformer.GETransformer;
+import transformer.GEMover;
 import java.awt.Color;
 
 public class GEDrawingPanel extends JPanel {
@@ -82,8 +83,6 @@ public class GEDrawingPanel extends JPanel {
 		currentShape = currentShape.clone();
 		currentShape.setLineColor(lineColor);
 		currentShape.setFillColor(fillColor);
-		transformer = new GEDrawer(currentShape);
-		transformer.init(startP);
 	}
 	
 	
@@ -115,7 +114,7 @@ public class GEDrawingPanel extends JPanel {
 
 		@Override
 		public void mouseDragged(MouseEvent e) {
-			if(currentState == EState.TwoPointsDrawing){
+			if(currentState != EState.Idle){
 				transformer.transformer(
 						(Graphics2D)getGraphics(), e.getPoint());
 			}
@@ -128,6 +127,8 @@ public class GEDrawingPanel extends JPanel {
 					clearSelectedShapes();
 					selectedShape = null;
 					initDraw(e.getPoint());
+					transformer = new GEDrawer(currentShape);
+					transformer.init(e.getPoint());
 					if(currentShape instanceof GEPolygon){
 						currentState = EState.NPointsDrawing;
 					}else{
@@ -138,6 +139,9 @@ public class GEDrawingPanel extends JPanel {
 					clearSelectedShapes();
 					if(selectedShape != null){
 						selectedShape.setSelected(true);
+						transformer = new GEMover(selectedShape);
+						currentState = EState.Moving;
+						transformer.init(e.getPoint());
 					}
 				}
 			}
@@ -146,12 +150,12 @@ public class GEDrawingPanel extends JPanel {
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			if(currentState == EState.TwoPointsDrawing){
-				//((GEDrawer)transformer).finalize(shapeList);
 				finishDraw();
-				currentState = EState.Idle;
+				
 			}else if(currentState == EState.NPointsDrawing){
 				return;
 			}
+			currentState = EState.Idle;
 			repaint();
 		}
 
@@ -162,7 +166,6 @@ public class GEDrawingPanel extends JPanel {
 					if(e.getClickCount() == 1){
 						continueDrawing(e.getPoint());
 					}else if(e.getClickCount() == 2){
-						//((GEDrawer)transformer).finalize(shapeList);
 						finishDraw();
 						currentState = EState.Idle;
 						repaint();

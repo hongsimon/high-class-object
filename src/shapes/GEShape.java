@@ -7,6 +7,7 @@ import java.awt.Rectangle;
 import utils.GEAnchorList;
 import constants.GEConstants.EAnchorTypes;
 import java.awt.Color;
+import java.awt.geom.AffineTransform;
 
 public abstract class GEShape {
 	protected Shape myShape;
@@ -15,11 +16,13 @@ public abstract class GEShape {
 	protected GEAnchorList anchorList;
 	protected EAnchorTypes selectedAnchor;
 	protected Color lineColor, fillColor;
+	protected AffineTransform affineTransform;
 	
 	public GEShape(Shape shape){
 		this.myShape = shape;
 		anchorList = null;
 		selected = false;
+		affineTransform = new AffineTransform();
 	}
 	
 	
@@ -43,6 +46,7 @@ public abstract class GEShape {
 			g2D.draw(myShape);
 		}
 		if(selected == true){
+			anchorList.setPosition(myShape.getBounds());
 			anchorList.draw(g2D);
 		}
 	}
@@ -65,6 +69,11 @@ public abstract class GEShape {
 			}
 		}
 		return myShape.intersects(new Rectangle(p.x, p.y, 2, 2));
+	}
+	
+	public void moveCoordinate(Point moveP){
+		affineTransform.setToTranslation(moveP.getX(), moveP.getY());
+		myShape = affineTransform.createTransformedShape(myShape);
 	}
 	
 	abstract public void initDraw(Point startP);
