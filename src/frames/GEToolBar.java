@@ -17,9 +17,8 @@ public class GEToolBar extends JToolBar {
 			rButton = new JRadioButton();
 			rButton.setIcon(new ImageIcon(GEConstants.IMG_URL + btn.toString() 
 					+ GEConstants.TOOLBAR_BTN));//"images/select.gif"
-			rButton.setSelectedIcon(new ImageIcon(
-									GEConstants.IMG_URL + btn.toString()
-									+ GEConstants.TOOLBAR_BTN_SLT));
+			rButton.setSelectedIcon(new ImageIcon(GEConstants.IMG_URL + btn.toString()
+					+ GEConstants.TOOLBAR_BTN_SLT));
 			buttonGroup.add(rButton);
 			this.add(rButton);
 		}
