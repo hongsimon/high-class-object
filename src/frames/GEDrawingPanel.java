@@ -13,6 +13,7 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import transformer.GEDrawer;
 import transformer.GETransformer;
+import java.awt.Color;
 
 public class GEDrawingPanel extends JPanel {
 
@@ -21,6 +22,7 @@ public class GEDrawingPanel extends JPanel {
 	private ArrayList<GEShape> shapeList;
 	private GETransformer transformer;
 	private MouseDrawingHandler drawingHandler;
+	private Color lineColor, fillColor;
 
 	public GEDrawingPanel() {
 		super();
@@ -31,8 +33,39 @@ public class GEDrawingPanel extends JPanel {
 		this.addMouseMotionListener(drawingHandler);
 		this.setForeground(GEConstants.FOREGROUND_COLOR);
 		this.setBackground(GEConstants.BACKGROUND_COLOR);
+		lineColor = GEConstants.COLOR_LINE_DEFAULT;
+		fillColor = GEConstants.COLOR_FILL_DEFAULT;
 	}
 	
+	public void setLineColor(Color lineColor) {
+		if(selectedSetColor(true, lineColor) == true){
+			return;
+		}
+		this.lineColor = lineColor;
+	}
+
+
+
+	public void setFillColor(Color fillColor) {
+		if(selectedSetColor(false, fillColor) == true){
+			return;
+		}
+		this.fillColor = fillColor;
+	}
+
+	private boolean selectedSetColor(boolean flag, Color color){
+		if(selectedShape != null){
+			if(flag == true){
+				selectedShape.setLineColor(color);
+			}else{
+				selectedShape.setFillColor(color);
+			}
+			repaint();
+			return true;
+		}
+		return false;
+	}
+
 	public void setCurrentShape(GEShape currentShape){
 		this.currentShape = currentShape;
 	}
@@ -47,6 +80,8 @@ public class GEDrawingPanel extends JPanel {
 	
 	private void initDraw(Point startP){
 		currentShape = currentShape.clone();
+		currentShape.setLineColor(lineColor);
+		currentShape.setFillColor(fillColor);
 		transformer = new GEDrawer(currentShape);
 		transformer.init(startP);
 	}
@@ -111,6 +146,7 @@ public class GEDrawingPanel extends JPanel {
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			if(currentState == EState.TwoPointsDrawing){
+				//((GEDrawer)transformer).finalize(shapeList);
 				finishDraw();
 				currentState = EState.Idle;
 			}else if(currentState == EState.NPointsDrawing){
@@ -126,6 +162,7 @@ public class GEDrawingPanel extends JPanel {
 					if(e.getClickCount() == 1){
 						continueDrawing(e.getPoint());
 					}else if(e.getClickCount() == 2){
+						//((GEDrawer)transformer).finalize(shapeList);
 						finishDraw();
 						currentState = EState.Idle;
 						repaint();
@@ -141,5 +178,31 @@ public class GEDrawingPanel extends JPanel {
 						(Graphics2D)getGraphics(), e.getPoint());
 			}
 		}		
+		
 	}
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

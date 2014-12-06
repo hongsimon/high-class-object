@@ -6,7 +6,7 @@ public class GEConstants {
 	//GEMainFrame
 	public static final int WIDTH_MAINFRAME = 400;
 	public static final int HEIGHT_MAINFRAME = 600;
-	public static final String TITLE_MAINFRAME = "그래픽 에디터-09";	
+	public static final String TITLE_MAINFRAME = "그래픽 에디터-10";	
 	
 	//GEMenu
 	public static final String TITLE_FILEMENU = "파일";	
@@ -33,6 +33,8 @@ public class GEConstants {
 	public static final Color FOREGROUND_COLOR = Color.BLACK;
 	public static final Color BACKGROUND_COLOR = Color.WHITE;
 	public static enum EState {Idle, TwoPointsDrawing, NPointsDrawing};
+	public final static Color COLOR_LINE_DEFAULT = Color.black;
+	public final static Color COLOR_FILL_DEFAULT = Color.white;
 	
 	//GEAnchorList
 	public static final int ANCHOR_W = 6;
@@ -41,6 +43,15 @@ public class GEConstants {
 	public static final Color ANCHOR_LINECOLOR = Color.black;
 	public static final Color ANCHOR_FILLCOLOR = Color.white;
 	public static enum EAnchorTypes {NW, NN, NE, WW, EE, SW, SS, SE, RR, NONE};
+	
+	//GEMenuColor
+	public static final String FILLCOLOR_TITLE = "Select Fill Color";
+	public static final String LINECOLOR_TITLE = "Select Line Color";
+	
+	//GETransformer
+	public final static int DEFAULT_DASH_OFFSET = 4;
+	public final static int DEFAULT_DASHEDLINE_WIDTH = 1;
+	
 }
 
 
